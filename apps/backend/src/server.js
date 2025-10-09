@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import helmet from "helmet"; // ✅ Added
 
 import { router as healthRouter } from "./routes/health.route.js";
 
@@ -14,6 +15,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors());
+app.use(helmet()); // ✅ Security middleware
 app.use(morgan("dev"));
 
 // Routes

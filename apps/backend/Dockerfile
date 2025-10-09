@@ -1,4 +1,20 @@
-FROM node:20-alpine
+# Use Node LTS
+FROM node:18-alpine
+
+# Set working directory
 WORKDIR /app
-# full Dockerfile added on Day 2
-CMD ["node", "--version"]
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --production
+
+# Copy rest of the code
+COPY . .
+
+# Expose port
+EXPOSE 5000
+
+# Start command
+CMD ["npm", "start"]
