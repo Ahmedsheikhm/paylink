@@ -1,14 +1,37 @@
 version: '3.8'
+
 services:
+  backend:
+    build: ../backend
+    container_name: paylink-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ../backend/.env
+    depends_on:
+      - db
+      - cache
+    restart: always
+
   db:
     image: postgres:15
+    container_name: paylink-db
     environment:
-      POSTGRES_USER: paylink
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: paylink
     ports:
       - "5432:5432"
-  redis:
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: always
+
+  cache:
     image: redis:7
+    container_name: paylink-cache
     ports:
       - "6379:6379"
+    restart: always
+
+volumes:
+  db_data:
