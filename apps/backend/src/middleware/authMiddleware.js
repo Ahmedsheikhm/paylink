@@ -8,16 +8,16 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export const requireAuth = async (req,res,next)=>{
     try{
-        const auth = req.headers.autherization;
-        if(!auth || !auth.startswith('Bearer')){
-            return res.status(401).json({message : 'Autherization required'});
+        const auth = req.headers.authorization;
+        if(!auth || !auth.startsWith('Bearer')){
+            return res.status(401).json({message : 'Authorization required'});
         }
 
         const token  =auth.split(' ')[1];
         const payload = jwt.verify(token,JWT_SECRET);
 
         //await user fetch from DB
-        const user = await prisma.user.findUnique({where : {id:payload.userId}});
+        const user = await prisma.user.findUnique({where : {id:payload.id}});
         if(!user){
             return res.status(401).json({message : 'Invalid token (user not found)'});
         }
