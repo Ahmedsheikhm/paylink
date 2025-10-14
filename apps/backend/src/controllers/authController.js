@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import prisma from '../config/prisma';
+import prisma from '../config/prisma.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
@@ -13,7 +13,7 @@ export const register = async (req,res)=>{
     try {
         const {name,email,password} = req.body;
         if(!name||!email||!password){
-            return res.status(400).json({message : "nameemail and password required"});
+            return res.status(400).json({message : "name,email and password required"});
         }
         //check existing
     const existing = await prisma.user.findUnique({where : {email}});
@@ -23,13 +23,13 @@ export const register = async (req,res)=>{
     const hashed = await bcrypt.hash(password,SALT_ROUNDS);
 
     const user = await prisma.user.create({
-        data : {name,email,passwprd:hashed},
+        data : {name,email,password:hashed},
         select : {id:true,name:true,email:true,createdAt:true},
     });
 
     //sign
-    const token = jwt.sign({userId:user.id},JWT_SECRET,{expiresIn:{JWT_EXPIRES_IN}});
-    res.status(201).json({user,token});
+    const token = jwt.sign({userId:user.id},JWT_SECRET,{expiresIn:JWT_EXPIRES_IN});
+    return res.status(201).json({user,token});
     }catch (err){
         console.error("register error",err);
         return res.status(500).json({message: "server error"});
