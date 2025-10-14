@@ -6,6 +6,8 @@ import helmet from "helmet"; // ✅ Added
 
 import { router as healthRouter } from "./routes/health.route.js";
 import router from "./routes/userRoutes.js";
+import authRoutes from './routes/authRoutes.js';
+import { requireAuth } from "./middleware/authMiddleware.js";
 
 // Initialize environment variables
 dotenv.config();
@@ -21,7 +23,13 @@ app.use(morgan("dev"));
 
 // Routes
 app.use("/api/health", healthRouter);
+app.use('/api/auth', authRoutes);
 app.use("/api/users", router);
+
+//Protected Routes
+app.get("/api/me",requireAuth,(req,res)=>{
+  res.json({user:req.user});
+})
 
 // Default route
 app.get("/", (req, res) => {
