@@ -21,7 +21,7 @@ export const requireAuth = async (req,res,next)=>{
         if(!user){
             return res.status(401).json({message : 'Invalid token (user not found)'});
         }
-        req.user = {id:user.id,name:user.name,email:user.email};
+        req.user = {id:user.id,name:user.name,email:user.email,role:user.role};
         return next();
     }catch(err){
         console.error('auth middleware error',err);

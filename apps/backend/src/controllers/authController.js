@@ -11,7 +11,7 @@ const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || '10',10);
 
 export const register = async (req,res)=>{
     try {
-        const {name,email,password} = req.body;
+        const {name,email,password,role} = req.body;
         if(!name||!email||!password){
             return res.status(400).json({message : "name,email and password required"});
         }
@@ -23,12 +23,12 @@ export const register = async (req,res)=>{
     const hashed = await bcrypt.hash(password,SALT_ROUNDS);
 
     const user = await prisma.user.create({
-        data : {name,email,password:hashed},
+        data : {name,email,password:hashed,role: role || "USER"},
         select : {id:true,name:true,email:true,createdAt:true},
     });
 
     //sign
-    const token = jwt.sign({userId:user.id},JWT_SECRET,{expiresIn:JWT_EXPIRES_IN});
+    const token = jwt.sign({id:user.id},JWT_SECRET,{expiresIn:JWT_EXPIRES_IN});
     return res.status(201).json({user,token});
     }catch (err){
         console.error("register error",err);
