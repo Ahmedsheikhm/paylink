@@ -8,6 +8,8 @@ import { router as healthRouter } from "./routes/health.route.js";
 import router from "./routes/userRoutes.js";
 import authRoutes from './routes/authRoutes.js';
 import { requireAuth } from "./middleware/authMiddleware.js";
+import walletRoutes from './routes/walletRoutes.js';
+import transactionRoutes from './routes/transactionRoutes.js';
 
 // Initialize environment variables
 dotenv.config();
@@ -30,6 +32,9 @@ app.use("/api/users", router);
 app.get("/api/me",requireAuth,(req,res)=>{
   res.json({user:req.user});
 })
+app.use('/api/wallet',walletRoutes);
+app.use('/api/transactions',transactionRoutes);
+
 
 // Default route
 app.get("/", (req, res) => {
