@@ -7,7 +7,7 @@ const router = express.Router();
 router.use(requireAuth);//all wallet routes require auth
 
 router.get('/',getMyWallet);
-router.get('/',createWallet); //create wallet for current user
+router.post('/',createWallet); //create wallet for current user
 router.get('/:userId',getMyWalletByUserId);//admin or lookup wallet
 
 export default router;

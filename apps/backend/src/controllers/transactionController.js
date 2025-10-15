@@ -91,7 +91,7 @@ export const transfer = async (req,res)=>{
         const fromUserId=req.user.id;
         const {toUserId,amount,description}=req.body;
         if(!toUserId)return res.status(400).json({message : 'toUserId required'});
-        if(amount!=='number'||amount<=0)return res.status(400).json({message : 'amount needs to be a positive number'});
+        if(typeof amount!=='number'||amount<=0)return res.status(400).json({message : 'amount needs to be a positive number'});
         if(toUserId===fromUserId)return res.status(400).json({message : 'cannot transfer to self'});
 
         const result = await prisma.$transaction(async (tx)=>{

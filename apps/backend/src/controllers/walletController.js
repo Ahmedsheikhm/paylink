@@ -21,8 +21,8 @@ export const getMyWallet = async (req,res)=>{
 //post /api/wallet
 export const createWallet = async (req,res)=>{
     try{
-        const userId = await req.user.id;
-        const existing = await prisma.user.findUnique({where: {userId}});
+        const userId = req.user.id;
+        const existing = await prisma.wallet.findUnique({where: {userId}});
         if(existing) return res.status(409).json({message : 'User already exists'});
 
         const wallet = await  prisma.wallet.create({
