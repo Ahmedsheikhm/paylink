@@ -11,7 +11,8 @@ export default defineConfig([
       ecmaVersion: "latest",
       sourceType: "module",
       globals: {
-        ...globals.node, // ✅ Enables process, require, etc.
+        ...globals.node,
+        ...globals.jest, // ✅ Enables process, require, etc.
       },
     },
     rules: {

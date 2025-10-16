@@ -13,7 +13,7 @@ export const requireAuth = async (req,res,next)=>{
             return res.status(401).json({message : 'Authorization required'});
         }
 
-        const token  =auth.split(' ')[1];
+        const token  = auth.split(' ')[1];
         const payload = jwt.verify(token,JWT_SECRET);
 
         //await user fetch from DB

@@ -45,7 +45,7 @@ export const getMyWalletByUserId = async (req,res)=>{
             include: {transactions:true},
         });
         if(!wallet)return res.status(404).json({message : 'Wallet not found'});
-        return res.json(wallet);
+        return res.status(200).json(wallet);
     }catch(err){
         console.error('getMyWalletById error',err);
         return res.status(500).json({message : 'Server error'});

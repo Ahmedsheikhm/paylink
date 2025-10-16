@@ -14,8 +14,8 @@ const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || '10',10);
 
 export const register = asyncHandler(async (req,res)=>{
         const {name,email,password,role} = req.body;
-        if(!name||!email||!password){
-            return res.status(400).json({message : "name,email and password required"});
+        if(!name||!email||!password||!role){
+            return res.status(400).json({message : "name,email,password and role required"});
         }
         //check existing
     const existing = await prisma.user.findUnique({where : {email}});
@@ -38,29 +38,26 @@ export const register = asyncHandler(async (req,res)=>{
 });
 //Apply same pattern to login, wallet, transaction controllers as the one done above.(Very important)
 
-export const login = async (req,res)=>{
-    try{
+export const login = asyncHandler(async (req,res)=>{
+    
         const {email,password} = req.body;
         if(!email||!password){
-            return res.status(400).json({message:'Email and password required'});
+            return fail(res, 'ValidationError', 'Email and password are required', 400);
         }
 
         const user = await prisma.user.findUnique({where : {email}});
         if(!user){
-            return res.status(401).json({message : 'Invalid credentials'});
+            return fail(res, 'AuthError', 'Invalid email or password', 401);
         }
 
         const valid = await bcrypt.compare(password,user.password);
         if(!valid){
-            return res.status(401).json({message: 'Invalid credentials'});
+            return fail(res, 'AuthError', 'Invalid email or password', 401);
         }
 
-        const token = jwt.sign({id:user.id},JWT_SECRET,{expiresIn:JWT_EXPIRES_IN});
+        const token = jwt.sign({id:user.id,role:user.role},JWT_SECRET,{expiresIn:JWT_EXPIRES_IN});
+        logger.info({ userId: user.id }, 'User logged in');
 
-        const safeUser = {id:user.id,name:user.name,email:user.email,createdAt:user.createdAt};
-        return res.json({user:safeUser,token});
-    }catch(err){
-        console.error('login error',err);
-        return res.status(500).json({message : 'Server error'});
-    }
-};
+        const safeUser = {id:user.id,name:user.name,email:user.email,role:user.role,createdAt:user.createdAt};
+        return success(res,{user:safeUser,token},'Login Successfull',200);
+});
