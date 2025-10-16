@@ -17,38 +17,48 @@ import { apiErrorHandler } from "./middleware/errorHandler.js";
 // Initialize environment variables
 dotenv.config();
 
-// Create express app
-const app = express();
+const createApp = ()=>{
+  // Create express app
+  const app = express();
 
-// Middleware
-app.use(httpLogger);
-app.use(express.json());
-app.use(cors());
-app.use(helmet()); // ✅ Security middleware
-app.use(morgan("dev"));
-
-
-// Routes
-app.use("/api/health", healthRouter);
-app.use('/api/auth', authRoutes);
-app.use("/api/users", router);
-
-//Protected Routes
-app.get("/api/me",requireAuth,(req,res)=>{
-  res.json({user:req.user});
-})
-app.use('/api/wallet',walletRoutes);
-app.use('/api/transactions',transactionRoutes);
+  // Middleware
+  app.use(httpLogger);
+  app.use(express.json());
+  app.use(cors());
+  app.use(helmet()); // ✅ Security middleware
+  app.use(morgan("dev"));
 
 
-// Default route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to PayLink API 🚀" });
-});
-//error handler
-app.use(apiErrorHandler);
+  // Routes
+  app.use("/api/health", healthRouter);
+  app.use('/api/auth', authRoutes);
+  app.use("/api/users", router);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`✅ Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-});
+  //Protected Routes
+  app.get("/api/me",requireAuth,(req,res)=>{
+    res.json({user:req.user});
+  })
+  app.use('/api/wallet',walletRoutes);
+  app.use('/api/transactions',transactionRoutes);
+
+
+  // Default route
+  app.get("/", (req, res) => {
+    res.json({ message: "Welcome to PayLink API 🚀" });
+  });
+  //error handler
+  app.use(apiErrorHandler);
+  return app;
+};
+
+// Only start server when run directly, not when imported by tests
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 5000;
+  const app = createApp();
+  app.listen(PORT, () => {
+    console.log(`✅ Server running in ${process.env.NODE_ENV} on port ${PORT}`);
+  });
+}
+
+// default export for convenience
+export default createApp;
