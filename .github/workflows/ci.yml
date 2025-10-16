@@ -30,15 +30,19 @@ jobs:
       NODE_ENV: test
 
     steps:
+      # ✅ Step 1: Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ✅ Step 2: Setup Node.js (cache dependencies from backend folder)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
+          cache: 'npm'
+          cache-dependency-path: apps/backend/package-lock.json
 
+      # ✅ Step 3: Wait for MySQL
       - name: Wait for MySQL to be ready
         run: |
           echo "⏳ Waiting for MySQL..."
@@ -46,26 +50,32 @@ jobs:
             mysql -h 127.0.0.1 -uroot -proot -e "SELECT 1" && break || sleep 2
           done
 
+      # ✅ Step 4: Install dependencies (in backend)
       - name: Install dependencies
         working-directory: apps/backend
         run: npm ci
 
+      # ✅ Step 5: Generate Prisma client
       - name: Generate Prisma Client
         working-directory: apps/backend
         run: npx prisma generate
 
+      # ✅ Step 6: Apply Prisma migrations
       - name: Apply Prisma migrations
         working-directory: apps/backend
         run: npx prisma migrate deploy
 
+      # ✅ Step 7: Lint code
       - name: Run ESLint
         working-directory: apps/backend
         run: npm run lint
 
+      # ✅ Step 8: Run Jest tests + coverage
       - name: Run Jest tests with coverage
         working-directory: apps/backend
         run: npm run test:coverage
 
+      # ✅ Step 9: Upload coverage as an artifact (optional)
       - name: Upload coverage report artifact
         if: success()
         uses: actions/upload-artifact@v4
@@ -73,10 +83,12 @@ jobs:
           name: coverage-report
           path: apps/backend/coverage
 
+      # ✅ Step 10: Upload to Codecov (for badge)
       - name: Upload coverage to Codecov
         if: success()
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          directory: apps/backend/coverage
           files: apps/backend/coverage/lcov.info
           fail_ci_if_error: true
