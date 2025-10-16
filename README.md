@@ -33,3 +33,7 @@ git clone https://github.com/Ahmedsheikhm/paylink.git
 cd paylink
 # add env files later (do NOT commit .env)
 # run backend later per Day 2-3 instructions
+
+![CI](https://github.com/Ahmedsheikhm/paylink/actions/workflows/ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/Ahmedsheikhm/paylink/branch/main/graph/badge.svg?token=YOURTOKEN)](https://codecov.io/gh/Ahmedsheikhm/paylink)
+

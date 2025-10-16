@@ -4,7 +4,7 @@ import prisma from '../src/config/prisma.js';
 
 let app;
 let token;
-let userId;
+//let userId;
 
 beforeAll(async ()=>{
     app = await getApp();
@@ -14,7 +14,7 @@ beforeAll(async ()=>{
     const email = `wallet-${random}@example.com`;
     
 
-    const resReg = await request(app)
+    await request(app)
     .post('/api/auth/register')
     .send({name:'walletTester',email,password:'password123',role:'ADMIN'});
 
@@ -24,7 +24,7 @@ beforeAll(async ()=>{
 
     token = resLogin.body.data.token;
     expect(token).toBeDefined();
-    userId =resLogin.body.user?.id || (resReg.body.user && resReg.body.user.id);
+    //userId =resLogin.body.user?.id || (resReg.body.user && resReg.body.user.id);
 });
 
 afterAll( async ()=>{
