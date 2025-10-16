@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "dev:stack": "cd infra && docker-compose up --build",
     "prisma": "prisma",
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
+    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "test:ci": "cross-env NODE_ENV=test jest --runInBand --coverage",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
