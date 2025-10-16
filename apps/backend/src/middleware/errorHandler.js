@@ -3,7 +3,7 @@ import pino from 'pino';
 const logger = pino();
 
 
-export const errorHandler = (err,req,res,next)=>{
+export const apiErrorHandler = (err,req,res,next)=>{
     //Normolize zod errors
     if(err?.name==='ZodError' || err?.issue){
         const issues = err.issues || err.errors;

@@ -2,6 +2,9 @@ import bcrypt from 'bcryptjs';
 import prisma from '../config/prisma.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import asyncHandler from '../utils/asyncHandler.js';
+import logger from '../config/logger.js';
+import { success,fail } from '../utils/response.js';
 
 dotenv.config();
 
@@ -9,15 +12,14 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || '10',10);
 
-export const register = async (req,res)=>{
-    try {
+export const register = asyncHandler(async (req,res)=>{
         const {name,email,password,role} = req.body;
         if(!name||!email||!password){
             return res.status(400).json({message : "name,email and password required"});
         }
         //check existing
     const existing = await prisma.user.findUnique({where : {email}});
-    if(existing) return res.status(409).json({message : "Email already in use"});
+    if(existing) return fail(res, 'UserExists', 'Email already in use', 409);
 
     //hash
     const hashed = await bcrypt.hash(password,SALT_ROUNDS);
@@ -28,13 +30,13 @@ export const register = async (req,res)=>{
     });
 
     //sign
-    const token = jwt.sign({id:user.id},JWT_SECRET,{expiresIn:JWT_EXPIRES_IN});
-    return res.status(201).json({user,token});
-    }catch (err){
-        console.error("register error",err);
-        return res.status(500).json({message: "server error"});
-    }
-};
+    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+  logger.info({ userId: user.id }, 'User registered');
+
+  return success(res, { user, token }, 'User registered', 201);
+    
+});
+//Apply same pattern to login, wallet, transaction controllers as the one done above.(Very important)
 
 export const login = async (req,res)=>{
     try{
