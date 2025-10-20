@@ -26,7 +26,7 @@ export const register = asyncHandler(async (req,res)=>{
 
     const user = await prisma.user.create({
         data : {name,email,password:hashed,role: role || "USER"},
-        select : {id:true,name:true,email:true,createdAt:true},
+        select : {id:true,name:true,email:true,createdAt:true,role:true},
     });
 
     //sign

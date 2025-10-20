@@ -15,6 +15,7 @@ afterAll(async()=>{
 test('Register -> login flow',async ()=>{
     const random = Math.random().toString(36).slice(2,9);
     const email = `test-${random}@example.com`;
+    
     const registerRes = await request(app)
     .post('/api/auth/register')
     .send({name : 'Test User',email,password:'password123',role:'USER'});
