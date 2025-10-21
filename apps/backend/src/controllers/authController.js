@@ -26,7 +26,7 @@ export const register = asyncHandler(async (req,res)=>{
 
     const user = await prisma.user.create({
         data : {name,email,password:hashed,role: role || "USER"},
-        select : {id:true,name:true,email:true,createdAt:true,role:true},
+        select : {id:true,name:true,email:true,role:true,createdAt:true,},
     });
 
     //sign
@@ -55,7 +55,7 @@ export const login = asyncHandler(async (req,res)=>{
             return fail(res, 'AuthError', 'Invalid email or password', 401);
         }
 
-        const token = jwt.sign({id:user.id,role:user.role},JWT_SECRET,{expiresIn:JWT_EXPIRES_IN});
+        const token = jwt.sign({id:user.id,role:user.role},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRES_IN});
         logger.info({ userId: user.id }, 'User logged in');
 
         const safeUser = {id:user.id,name:user.name,email:user.email,role:user.role,createdAt:user.createdAt};
