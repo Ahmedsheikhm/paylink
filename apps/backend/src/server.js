@@ -5,6 +5,7 @@ import morgan from "morgan";
 import helmet from "helmet"; // ✅ Added
 
 
+
 import { router as healthRouter } from "./routes/health.route.js";
 import router from "./routes/userRoutes.js";
 import authRoutes from './routes/authRoutes.js';
@@ -13,6 +14,7 @@ import walletRoutes from './routes/walletRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import { httpLogger } from "./config/logger.js";
 import { apiErrorHandler } from "./middleware/errorHandler.js";
+import { helmetMiddleware } from './config/security.js';
 
 // Initialize environment variables
 dotenv.config();
@@ -20,6 +22,9 @@ dotenv.config();
 const createApp = ()=>{
   // Create express app
   const app = express();
+
+  app.disable('x-powered-by');
+  app.use(helmetMiddleware);
 
   // Middleware
   app.use(httpLogger);
