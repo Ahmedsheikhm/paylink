@@ -15,6 +15,7 @@ import transactionRoutes from './routes/transactionRoutes.js';
 import { httpLogger } from "./config/logger.js";
 import { apiErrorHandler } from "./middleware/errorHandler.js";
 import { helmetMiddleware } from './config/security.js';
+import { apiSlowDown, apiRateLimiter } from './middleware/rateLimiter.js';
 
 // Initialize environment variables
 dotenv.config();
@@ -22,9 +23,14 @@ dotenv.config();
 const createApp = ()=>{
   // Create express app
   const app = express();
-
+  
+  //helmet security
   app.disable('x-powered-by');
   app.use(helmetMiddleware);
+
+  //rate limiting
+  app.use(apiSlowDown);
+  app.use('/api/', apiRateLimiter); // apply rate limiting to API routes
 
   // Middleware
   app.use(httpLogger);
