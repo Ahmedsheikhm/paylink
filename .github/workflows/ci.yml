@@ -25,11 +25,11 @@ jobs:
           --health-retries=10
 
     env:
-    DATABASE_URL: ${{ secrets.DATABASE_URL }}
-    JWT_SECRET: ${{ secrets.JWT_SECRET }}
-    JWT_EXPIRES_IN: "7d"
-    SALT_ROUNDS: "10"
-    NODE_ENV: test
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      NODE_ENV: test
+      JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}
+      BCRYPT_SALT_ROUNDS=${{ secrets.BCRYPT_SALT_ROUNDS }}
 
     steps:
       # ✅ Step 1: Checkout code
