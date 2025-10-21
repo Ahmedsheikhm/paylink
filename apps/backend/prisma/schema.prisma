@@ -43,6 +43,14 @@ model Merchant {
   apiKey    String   @unique
   createdAt DateTime @default(now())
 }
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?  // nullable when system event
+  action     String   // e.g., "TRANSACTION_TRANSFER", "WALLET_CREATE"
+  resourceId String?  // id of wallet/txn/merchant
+  meta       Json?    // details like amount, recipient, ip, userAgent
+  createdAt  DateTime @default(now())
+}
 enum Role {
   ADMIN
   MERCHANT

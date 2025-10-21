@@ -1,4 +1,5 @@
 import prisma from "../config/prisma.js";
+import { audit } from "../utils/audit.js";
 
 //depostit into current users wallet
 //post /api/transactions/deposit
@@ -126,6 +127,7 @@ export const transfer = async (req,res)=>{
                     walletId : toWallet.id,
                 },
             });
+            await audit({ userId: fromUserId, action: 'TRANSACTION_TRANSFER', resourceId: debitTxn.id, meta: { amount, toUserId } });
             return {
                 from : {walletId : fromWallet.id,balance : newFromBalance,txn: debitTxn},
                 to : {walletId : toWallet.id,balance: newToBalance,txn : creditTxn},
