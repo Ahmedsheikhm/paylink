@@ -13,4 +13,5 @@ export const helmetMiddleware = helmet({
     frameguard:{action:'deny'},
     referrerPolicy:{policy: 'strict-origin-when-cross-origin'},
     crossOriginEmbedderPolicy : false, //adjust if using COEP
+    hsts: { maxAge: 63072000, includeSubDomains: true, preload: true },
 });

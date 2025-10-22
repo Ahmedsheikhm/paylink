@@ -16,6 +16,7 @@ import { httpLogger } from "./config/logger.js";
 import { apiErrorHandler } from "./middleware/errorHandler.js";
 import { helmetMiddleware } from './config/security.js';
 import { apiSlowDown, apiRateLimiter } from './middleware/rateLimiter.js';
+import { enforceHttps } from "./middleware/httpsRedirect.js";
 
 // Initialize environment variables
 dotenv.config();
@@ -23,7 +24,10 @@ dotenv.config();
 const createApp = ()=>{
   // Create express app
   const app = express();
-  
+
+  if (process.env.TRUST_PROXY) app.set('trust proxy', 1); // e.g., when behind load balancer
+  app.use(enforceHttps);
+
   //helmet security
   app.disable('x-powered-by');
   app.use(helmetMiddleware);
