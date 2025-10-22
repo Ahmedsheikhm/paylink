@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import helmet from "helmet"; // ✅ Added
+import env from './config/env.js'; // this validates on import
 
 
 
@@ -67,7 +68,7 @@ const createApp = ()=>{
 };
 
 // Only start server when run directly, not when imported by tests
-if (process.env.NODE_ENV !== 'test') {
+if (env.NODE_ENV !== 'test') {
   const PORT = process.env.PORT || 5000;
   const app = createApp();
   app.listen(PORT, () => {
