@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import helmet from "helmet"; // ✅ Added
 import env from './config/env.js'; // this validates on import
+import hpp from 'hpp';
 
 
 
@@ -28,6 +29,10 @@ const createApp = ()=>{
 
   if (process.env.TRUST_PROXY) app.set('trust proxy', 1); // e.g., when behind load balancer
   app.use(enforceHttps);
+  
+  //using hpp
+  app.use(hpp());
+
 
   //helmet security
   app.disable('x-powered-by');
@@ -40,7 +45,11 @@ const createApp = ()=>{
   // Middleware
   app.use(httpLogger);
   app.use(express.json());
-  app.use(cors());
+  app.use(cors({
+  origin: process.env.CORS_ORIGIN || 'https://your-frontend.example.com',
+  methods: ['GET','POST','PUT','DELETE'],
+  credentials: true,
+  }));
   app.use(helmet()); // ✅ Security middleware
   app.use(morgan("dev"));
 
