@@ -18,7 +18,7 @@ import transactionRoutes from './routes/transactionRoutes.js';
 import { httpLogger } from "./config/logger.js";
 import { apiErrorHandler } from "./middleware/errorHandler.js";
 import { helmetMiddleware } from './config/security.js';
-import { apiSlowDown, apiRateLimiter } from './middleware/rateLimiter.js';
+import { apiSlowDown, apiRateLimiter,authLimiter} from './middleware/rateLimiter.js';
 import { enforceHttps } from "./middleware/httpsRedirect.js";
 
 // Initialize environment variables
@@ -62,7 +62,7 @@ const createApp = ()=>{
 
   // Routes
   app.use("/api/health", healthRouter);
-  app.use('/api/auth', authRoutes);
+  app.use('/api/auth',authLimiter, authRoutes);
   app.use("/api/users", router);
 
   //Protected Routes
