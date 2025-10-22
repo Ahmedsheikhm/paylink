@@ -5,6 +5,7 @@ import morgan from "morgan";
 import helmet from "helmet"; // ✅ Added
 import env from './config/env.js'; // this validates on import
 import hpp from 'hpp';
+import compression from 'compression';
 
 
 
@@ -29,7 +30,10 @@ const createApp = ()=>{
 
   if (process.env.TRUST_PROXY) app.set('trust proxy', 1); // e.g., when behind load balancer
   app.use(enforceHttps);
-  
+
+  //using compresion
+  app.use(compression());
+
   //using hpp
   app.use(hpp());
 
@@ -52,6 +56,8 @@ const createApp = ()=>{
   }));
   app.use(helmet()); // ✅ Security middleware
   app.use(morgan("dev"));
+
+  app.use('/static', express.static('public', { maxAge: '7d' }));
 
 
   // Routes
