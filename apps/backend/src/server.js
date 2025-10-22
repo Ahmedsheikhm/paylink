@@ -18,7 +18,7 @@ import transactionRoutes from './routes/transactionRoutes.js';
 import { httpLogger } from "./config/logger.js";
 import { apiErrorHandler } from "./middleware/errorHandler.js";
 import { helmetMiddleware } from './config/security.js';
-import { apiSlowDown, apiRateLimiter,authLimiter} from './middleware/rateLimiter.js';
+import { apiSlowDown, apiRateLimiter,authLimiter} from './middleware/rateMiddleware.js';
 import { enforceHttps } from "./middleware/httpsRedirect.js";
 
 // Initialize environment variables

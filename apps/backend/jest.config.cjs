@@ -10,6 +10,9 @@ module.exports = {
   ],
   coverageDirectory: "coverage",
   moduleFileExtensions: ["js", "json"],
+  moduleNameMapper: {
+  '^tslib$': 'C:/Users/S. M. Arif/node_modules/tslib/tslib.js',
+  },
   // treat .js files as ESM if your project is ESM — if you run into trouble,
   // remove this line or adjust based on your project setup
   //extensionsToTreatAsEsm: [".js"],
